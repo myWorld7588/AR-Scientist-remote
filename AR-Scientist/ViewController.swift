@@ -20,6 +20,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the view's delegate
         sceneView.delegate = self
+        loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,5 +71,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         node.addChildNode(planeNode)
         
         return node
+    }
+    
+    func loadData() {
+        guard let url = Bundle.main.url(forResource: "scientists", withExtension: "json") else {
+            fatalError("Unable to find JSON in bundle")
+        }
+        
+        guard let data = try? Data(contentsOf: url) else {
+            fatalError("Unale to load JSON")
+        }
+        
+            let decoder = JSONDecoder()
+            
+        guard let loadedScientists = try? decoder.decode([String: Scientist].self, from: data) else {
+            fatalError("Unable to parse JSON")
+        }
+        scienists = loadedScientists
     }
 }
