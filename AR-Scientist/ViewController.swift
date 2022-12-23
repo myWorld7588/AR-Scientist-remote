@@ -12,7 +12,9 @@ import ARKit
 class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
-    
+    // scientists dictionary which has strings of keys and scientists both value
+    var scienists = [String: Scientist]()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         

@@ -15,5 +15,4 @@ struct Scientist: Decodable {
     let bio: String
     let country: String
     let source: String
-    
 }
