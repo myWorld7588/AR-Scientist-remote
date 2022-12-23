@@ -59,6 +59,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // warp in to a node set geometry position to plane so when camera moves also the node follows movement
         let planeNode = SCNNode(geometry: plane)
-        return planeNode
+        
+        // make it flat to down 90'
+        planeNode.eulerAngles.x = -.pi / 2
+        
+        // make new empty SCNNode add planenode to that and return node
+        let node = SCNNode()
+        node.addChildNode(planeNode)
+        
+        return node
     }
 }
