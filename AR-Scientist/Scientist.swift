@@ -7,6 +7,7 @@
 
 import Foundation
 
+// scientist dictionary
 struct Scientist: Decodable {
     let name: String
     let dates: String
@@ -14,4 +15,5 @@ struct Scientist: Decodable {
     let bio: String
     let country: String
     let source: String
+    
 }
