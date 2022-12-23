@@ -45,5 +45,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
-
+    
+    // nodefor
+    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        
+        // trying to convert ARAnchor which could be some replaced or something detected to an image anchor from images
+        guard let imageAnchor = anchor as? ARImageAnchor else { return nil }
+       
+        // make scene kit plane that has two dimensional width and height
+        let plane = SCNPlane(width: imageAnchor.referenceImage.physicalSize.width, height: imageAnchor.referenceImage.physicalSize.height)
+        // set color blue for now
+        plane.firstMaterial?.diffuse.contents = UIColor.blue
+        
+        // warp in to a node set geometry position to plane so when camera moves also the node follows movement
+        let planeNode = SCNNode(geometry: plane)
+        return planeNode
+    }
 }
