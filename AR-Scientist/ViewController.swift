@@ -77,6 +77,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
         let spacing: Float = 0.005
 
+        // Show name
         let titleNode = textNode(scientist.name, font: UIFont.boldSystemFont(ofSize: 10))
         titleNode.pivotOnTopLeft()
 
@@ -84,10 +85,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         titleNode.position.y += Float(plane.height / 2)
 
         planeNode.addChildNode(titleNode)
+        
+        // show bio
+        let bioNode = textNode(scientist.bio, font: UIFont.systemFont(ofSize: 4), maxWidth: 100)
+        bioNode.pivotOnTopLeft()
+        
+        bioNode.position.x += Float(plane.width / 2) + spacing
+        bioNode.position.y = titleNode.position.y - titleNode.height - spacing
+        planeNode.addChildNode(bioNode)
+        
+        
+        
 
         return node
     }
 
+    // load json
     func loadData() {
         guard let url = Bundle.main.url(forResource: "scientists", withExtension: "json") else {
             fatalError("Unable to find JSON in bundle")
@@ -106,7 +119,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         scientists = loadedScientists
     }
 
-    //
+    // Text size
     func textNode(_ str: String, font: UIFont, maxWidth: Int? = nil) -> SCNNode {
         let text = SCNText(string: str, extrusionDepth: 0)
 
@@ -126,6 +139,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
 }
 
+//The minimum and maximum corner points of the object’s bounding box.
 extension SCNNode {
     var height: Float {
         return (boundingBox.max.y - boundingBox.min.y) * scale.y
