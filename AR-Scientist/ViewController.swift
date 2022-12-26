@@ -13,7 +13,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     // scientists dictionary which has strings of keys and scientists both value
-    var scienists = [String: Scientist]()
+    var scientists = [String: Scientist]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,15 +50,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     // nodefor
+
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        
         // trying to convert ARAnchor which could be some replaced or something detected to an image anchor from images
         guard let imageAnchor = anchor as? ARImageAnchor else { return nil }
-       
+        // and name and scientist ANCHOR
+        guard let name = imageAnchor.referenceImage.name else { return nil }
+        guard let scientist = scientists[name] else { return nil }
+        
         // make scene kit plane that has two dimensional width and height
         let plane = SCNPlane(width: imageAnchor.referenceImage.physicalSize.width, height: imageAnchor.referenceImage.physicalSize.height)
-        // set color blue for now
-        plane.firstMaterial?.diffuse.contents = UIColor.blue
+        
+        // CHANGE blue to clear
+        plane.firstMaterial?.diffuse.contents = UIColor.clear
+
         
         // warp in to a node set geometry position to plane so when camera moves also the node follows movement
         let planeNode = SCNNode(geometry: plane)
@@ -69,24 +74,70 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // make new empty SCNNode add planenode to that and return node
         let node = SCNNode()
         node.addChildNode(planeNode)
-        
+
+        let spacing: Float = 0.005
+
+        let titleNode = textNode(scientist.name, font: UIFont.boldSystemFont(ofSize: 10))
+        titleNode.pivotOnTopLeft()
+
+        titleNode.position.x += Float(plane.width / 2) + spacing
+        titleNode.position.y += Float(plane.height / 2)
+
+        planeNode.addChildNode(titleNode)
+
         return node
     }
-    
+
     func loadData() {
         guard let url = Bundle.main.url(forResource: "scientists", withExtension: "json") else {
             fatalError("Unable to find JSON in bundle")
         }
-        
+
         guard let data = try? Data(contentsOf: url) else {
-            fatalError("Unale to load JSON")
+            fatalError("Unable to load JSON")
         }
-        
-            let decoder = JSONDecoder()
-            
+
+        let decoder = JSONDecoder()
+
         guard let loadedScientists = try? decoder.decode([String: Scientist].self, from: data) else {
-            fatalError("Unable to parse JSON")
+            fatalError("Unable to parse JSON.")
         }
-        scienists = loadedScientists
+
+        scientists = loadedScientists
+    }
+
+    //
+    func textNode(_ str: String, font: UIFont, maxWidth: Int? = nil) -> SCNNode {
+        let text = SCNText(string: str, extrusionDepth: 0)
+
+        // give text flatness 0.1
+        text.flatness = 0.1
+        text.font = font
+
+        if let maxWidth = maxWidth {
+            text.containerFrame = CGRect(origin: .zero, size: CGSize(width: maxWidth, height: 500))
+            text.isWrapped = true
+        }
+
+        let textNode = SCNNode(geometry: text)
+        textNode.scale = SCNVector3(0.002, 0.002, 0.002)
+
+        return textNode
+    }
+}
+
+extension SCNNode {
+    var height: Float {
+        return (boundingBox.max.y - boundingBox.min.y) * scale.y
+    }
+
+    func pivotOnTopLeft() {
+        let (min, max) = boundingBox
+        pivot = SCNMatrix4MakeTranslation(min.x, max.y, 0)
+    }
+
+    func pivotOnTopCenter() {
+        let (_, max) = boundingBox
+        pivot = SCNMatrix4MakeTranslation(0, max.y, 0)
     }
 }
