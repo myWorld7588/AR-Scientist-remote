@@ -74,10 +74,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // make new empty SCNNode add planenode to that and return node
         let node = SCNNode()
         node.addChildNode(planeNode)
-
+        
+        // give spacing between titles and bio on the screen
         let spacing: Float = 0.005
 
-        // Show name
+        // Make First Node - Show name
         let titleNode = textNode(scientist.name, font: UIFont.boldSystemFont(ofSize: 10))
         titleNode.pivotOnTopLeft()
 
@@ -123,12 +124,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // give text flatness 0.1
         text.flatness = 0.1
         text.font = font
-
+        
+        // Draw ContainerFrame that wraps text insdie
         if let maxWidth = maxWidth {
             text.containerFrame = CGRect(origin: .zero, size: CGSize(width: maxWidth, height: 500))
             text.isWrapped = true
         }
-
+        // Make textNode Scale Tiny
         let textNode = SCNNode(geometry: text)
         textNode.scale = SCNVector3(0.002, 0.002, 0.002)
 
