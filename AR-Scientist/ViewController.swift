@@ -78,7 +78,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // give spacing between titles and bio on the screen
         let spacing: Float = 0.005
 
-        // Make First Node - Show name
+        // MARK: - FIRST NODE - NAME
+        
         let titleNode = textNode(scientist.name, font: UIFont.boldSystemFont(ofSize: 10))
         titleNode.pivotOnTopLeft()
 
@@ -87,13 +88,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
         planeNode.addChildNode(titleNode)
         
-        // show bio
+        // MARK: - SECOND NODE - BIO
+        
         let bioNode = textNode(scientist.bio, font: UIFont.systemFont(ofSize: 4), maxWidth: 100)
         bioNode.pivotOnTopLeft()
         
         bioNode.position.x += Float(plane.width / 2) + spacing
         bioNode.position.y = titleNode.position.y - titleNode.height - spacing
         planeNode.addChildNode(bioNode)
+        
+        
+        // MARK: - THIRD NODE - Flag
+        
+        let flag = SCNPlane(width: imageAnchor.referenceImage.physicalSize.width, height: imageAnchor.referenceImage.physicalSize.width / 8 * 5)
+        flag.firstMaterial?.diffuse.contents = UIImage(named: scientist.country)
+        
+        let flagNode = SCNNode(geometry: flag)
+        flagNode.pivotOnTopCenter()
+        
+        flagNode.position.y -= Float(plane.height / 2) + spacing
+        planeNode.addChildNode(flagNode)
     
         return node
     }
