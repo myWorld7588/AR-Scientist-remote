@@ -93,10 +93,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         bioNode.position.x += Float(plane.width / 2) + spacing
         bioNode.position.y = titleNode.position.y - titleNode.height - spacing
         planeNode.addChildNode(bioNode)
-        
-        
-        
-
+    
         return node
     }
 
